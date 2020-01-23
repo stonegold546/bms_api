@@ -1,0 +1,6 @@
+scipy
+numpy
+pickle
+pystan
+falcon
+gunicorn

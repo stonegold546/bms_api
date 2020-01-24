@@ -7,10 +7,6 @@ Procfile
 .RData
 misc/
 
-# Misc files
-sample_reqs.txt
-new_t_test.py
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

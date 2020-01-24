@@ -1,5 +1,15 @@
 Procfile
 
+# R and Rstudio
+*.R
+*.Rproj
+.Rhistory
+.RData
+misc/
+
+sample_reqs.txt
+new_t_test.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -89,3 +99,4 @@ ENV/
 
 # Rope project settings
 .ropeproject
+.Rproj.user

@@ -1,6 +1,13 @@
 scipy
+pandas
 numpy
 pickle
 pystan
 falcon
 gunicorn
+json
+pprint
+matplotlib
+arviz
+cStringIO
+PIL.Image

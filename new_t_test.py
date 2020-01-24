@@ -17,7 +17,7 @@ dat_list = {
     'x': np.concatenate(([1] * 47, [0] * 42)),
     'sd_m': 5, 'sd_m_diff': 15 / norm.ppf(.975),
     'sd_st': 1, 'sd_st_r': np.log(3) / norm.ppf(.975),
-    'pop': 0, 'nu_choice': 0
+    'nu_choice': 0
 }
 dat_list['N'] = len(dat_list['y'])
 
@@ -29,9 +29,9 @@ dat_list['N'] = len(dat_list['y'])
 #     pickle.dump(ddfdmdv, f)
 
 dmdv = pickle.load(open('stan_scripts/dmdv.pkl', 'rb'))
-ddfdmdv = pickle.load(open('stan_scripts/ddfdmdv.pkl', 'rb'))
+# ddfdmdv = pickle.load(open('stan_scripts/ddfdmdv.pkl', 'rb'))
 
-fit = ddfdmdv.sampling(data=dat_list, chains=4, iter=4000)
+fit = dmdv.sampling(data=dat_list, chains=4, iter=4000)
 # print(fit)
 
 az.plot_rank(fit, var_names=['m_diff', 'st_ratio', 'nu']); plt.show()

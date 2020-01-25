@@ -34,7 +34,7 @@ class TTest:
             'nu_choice': raw_data['nu_choice']
         }
         params = {new_list: {} for new_list in [
-            'm0', 'm1', 'm_diff', 'st0', 'st1', 'st_ratio', 'nu', 'ps']}
+            'm0', 'm1', 'm_diff', 'st0', 'st1', 'st_ratio', 'nu']}
         dmdv = pickle.load(open('stan_scripts/dmdv.pkl', 'rb'))
         fit = dmdv.sampling(data=dat_list, chains=4, iter=raw_data['n_iter'])
 

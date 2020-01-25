@@ -40,8 +40,6 @@ generated quantities {
   real <lower = 0> st0 = exp(ln_st0);
   real <lower = 0> st1 = exp(ln_st0 + ln_st_ratio);
   real<lower = 0> st_ratio = exp(ln_st_ratio);
-  real<lower = 0, upper = 1> ps = student_t_cdf(
-    m_diff, nu, 0, sqrt((n1 * st1 ^ 2 + n0 * st0 ^ 2) / N));
 
   for (i in 1:N) {
     yhat[i] = student_t_rng(nu + nu_choice, mu[i], sigma[i]);

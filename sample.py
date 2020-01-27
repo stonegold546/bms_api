@@ -1,13 +1,12 @@
-from scipy.stats import norm, rankdata
+from scipy.stats import norm
 import numpy as np
 import pandas as pd
 import pickle
-from pystan import StanModel
 import falcon
 from falcon_cors import CORS
 import pprint
-from json import dumps, load
-from base64 import b64encode, b64decode
+from json import load
+from base64 import b64encode
 import io
 import matplotlib.pyplot as plt
 import arviz as az
@@ -98,13 +97,13 @@ class TTest:
             params[param] = {
                 'mean': summary[i][0], 'median': np.median(posteriors[param]),
                 'mcse': summary[i][1], 'sd': summary[i][2],
-                'post': posteriors[param].tolist(), # 'ranks': rankdata(posteriors[param]).tolist(),
+                'post': posteriors[param].tolist(),
                 'ess': summary[i][3], 'rhat': summary[i][4],
                 # todo: 'warnings': 
             }
 
         rk_IOBytes = io.BytesIO()
-        rank_plot = az.plot_rank(fit, var_names = ('m_diff', 'st_ratio'))
+        az.plot_rank(fit, var_names = ('m_diff', 'st_ratio'))
         plt.savefig(rk_IOBytes, format='png')
         params['rk_hash'] = img_b64(rk_IOBytes)
 
@@ -113,12 +112,10 @@ class TTest:
 
         params['raw_data'] = raw_data
 
-        # print(params)
-        # pp.pprint(params)
         resp.media = params
 
 cors = CORS(allow_all_origins=True, allow_all_methods=True, allow_all_headers=True)
-api = falcon.API(middleware=[cors.middleware])
+api = application = falcon.API(middleware=[cors.middleware])
 
-# api = falcon.API()
+# api = application = falcon.API()
 api.add_route('/two_sample_test', TTest())

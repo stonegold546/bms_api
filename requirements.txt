@@ -1,14 +1,10 @@
 scipy
-numpy
-pandas
-pickle
+numpy>=1.17.0
+pandas>=0.24
 pystan
 falcon
 falcon_cors
 gunicorn
 pprint
-json
-base64
-io
-matplotlib
+matplotlib>=3.0
 arviz

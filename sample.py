@@ -26,16 +26,16 @@ def img_b64(bytes):
     return b64_hash.decode('utf-8')
 
 
-def create_qty_plt(samples, ref):
+def create_qty_plt(samples, name):
     y = list(
         map(lambda x: x / 1000, range(1, 1000)))
     x = np.quantile(samples, y)
     y = y[::-1]
     ytks = [.001, .5, .8, .95, .999]
     xtks = np.quantile(samples, [.001, .05, .2, .5, .999])
-    left, width = 0.15, .83
-    bottom, height = 0.13, 0.7
-    spacing = 0.005
+    left, width = 0.15, .8
+    bottom, height = 0.13, 0.65
+    spacing = 0.05
     rect_scatter = [left, bottom, width, height]
     rect_histx = [left, bottom + height + spacing, width, 0.15]
     plt.figure(figsize=(5, 6))
@@ -49,16 +49,19 @@ def create_qty_plt(samples, ref):
                                 for x in ax_scatter.get_yticks()])
     ax_scatter.set_xticks(xtks)
     ax_scatter.set_xlabel('threshold')
-    ax_scatter.set_ylabel('P(statistic > threshold)')
+    ax_scatter.set_ylabel('P(' + name + ' > threshold)')
     for ytk in ytks:
         ax_scatter.axhline(ytk, color="#5d5d5d", linestyle=':')
     for xtk in xtks:
         ax_scatter.axvline(xtk, color="#5d5d5d", linestyle=':')
-    if not ((ref is None) or (ref > np.max(samples)) or (ref < np.min(samples))):
-        ax_scatter.axvline(ref, color="#5d5d5d", linestyle='--')
+    # if not ((ref is None) or (ref > np.max(samples)) or (ref < np.min(samples))):
+    #     ax_scatter.axvline(ref, color="#5d5d5d", linestyle='--')
     ax_histx = plt.axes(rect_histx)
-    ax_histx.axis('off')
-    ax_histx.hist(x, bins=30, color='#5d5d5d')
+    ax_histx.get_yaxis().set_visible(False)
+    ax_histx.spines['right'].set_visible(False)
+    ax_histx.spines['left'].set_visible(False)
+    ax_histx.spines['top'].set_visible(False)
+    ax_histx.hist(x, bins=30, color='#5d5d5d', ec='black')
     ax_histx.set_xlim(ax_scatter.get_xlim())
     plt_IOBytes = io.BytesIO()
     plt.savefig(plt_IOBytes, format='png')
@@ -69,7 +72,7 @@ def create_qty_plt(samples, ref):
 class TTest:
     def on_post(self, req, resp, **kwargs):
         raw_data = load(req.bounded_stream)['params']
-        print(raw_data)
+        # print(raw_data)
         y1 = pd.Series(raw_data['y1'])
         y0 = pd.Series(raw_data['y0'])
         y_comb = pd.concat([y1, y0])
@@ -109,8 +112,10 @@ class TTest:
         plt.close()
         params['rk_hash'] = img_b64(rk_IOBytes)
 
-        params['mean_hash'] = create_qty_plt(posteriors['m_diff'], 0)
-        params['sc_hash'] = create_qty_plt(posteriors['st_ratio'], 1)
+        params['mean_hash'] = create_qty_plt(
+            posteriors['m_diff'], 'mean difference')
+        params['sc_hash'] = create_qty_plt(
+            posteriors['st_ratio'], 'SD ratio')
 
         params['raw_data'] = raw_data
 

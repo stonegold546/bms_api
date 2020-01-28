@@ -62,6 +62,7 @@ def create_qty_plt(samples, ref):
     ax_histx.set_xlim(ax_scatter.get_xlim())
     plt_IOBytes = io.BytesIO()
     plt.savefig(plt_IOBytes, format='png')
+    plt.close()
     return img_b64(plt_IOBytes)
 
 
@@ -105,6 +106,7 @@ class TTest:
         rk_IOBytes = io.BytesIO()
         az.plot_rank(fit, var_names = ('m_diff', 'st_ratio'))
         plt.savefig(rk_IOBytes, format='png')
+        plt.close()
         params['rk_hash'] = img_b64(rk_IOBytes)
 
         params['mean_hash'] = create_qty_plt(posteriors['m_diff'], 0)

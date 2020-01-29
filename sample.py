@@ -215,11 +215,10 @@ class TwoGroupBin:
             params[param] = {
                 'mean': par_sum[0], 'median': par_sum[4],
                 'mcse': par_sum[1], 'sd': par_sum[2],
-                # 'post': posteriors[param].tolist(),
                 'int.lo': par_sum[3], 'int.hi': par_sum[5],
                 'ess': par_sum[6], 'rhat': par_sum[7]
             }
-            if param in ['odds_ratio', 'prob_ratio', 'prob_diff']:
+            if param in ['m0', 'm_diff', 'odds_ratio', 'prob_ratio', 'prob_diff']:
                 params[param]['post'] = posteriors[param].tolist()
 
         rk_IOBytes = io.BytesIO()

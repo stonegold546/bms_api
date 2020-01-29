@@ -196,7 +196,7 @@ class TwoGroupBin:
             'sd_m_diff': np.log(raw_data['sd_m_diff']) / norm.ppf(.975)
         }
         params = {new_list: {}
-                  for new_list in ['m0', 'm_diff', 'means_logit[1]', 'means_logit[2]',
+                  for new_list in ['m0', 'm_diff', 'means_logit[2]',
                                    'odds_ratio', 'means_prob[1]', 'means_prob[2]',
                                    'prob_ratio', 'prob_diff']}
         two_group_logistic = pickle.load(open('stan_scripts/two_group_logistic.pkl', 'rb'))
@@ -212,6 +212,8 @@ class TwoGroupBin:
         for i in range(len(params)):
             param = list(params.keys())[i]
             par_sum = summary[i]
+            if param == 'means_logit[2]':
+                param = 'm1'
             params[param] = {
                 'mean': par_sum[0], 'median': par_sum[4],
                 'mcse': par_sum[1], 'sd': par_sum[2],
@@ -221,6 +223,7 @@ class TwoGroupBin:
             if param in ['m0', 'm_diff', 'odds_ratio', 'prob_ratio', 'prob_diff']:
                 params[param]['post'] = posteriors[param].tolist()
 
+        params.pop('means_logit[2]')
         rk_IOBytes = io.BytesIO()
         az.plot_rank(fit, var_names=('odds_ratio'))
         plt.savefig(rk_IOBytes, format='png')

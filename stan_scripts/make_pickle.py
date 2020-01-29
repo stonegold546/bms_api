@@ -3,6 +3,7 @@ import numpy as np
 import pickle
 from pystan import StanModel
 
+# Kruschke BEST
 dat_list = {
     'y': [101, 100, 102, 104, 102, 97, 105, 105, 98, 101, 100, 123, 105, 103, 100, 95, 102, 106,
         109, 102, 82, 102, 100, 102, 102, 101, 102, 102, 103, 103, 97, 97, 103, 101, 97, 104,
@@ -16,7 +17,7 @@ dat_list = {
 }
 
 sm = StanModel(file='dmdv.stan')
-fit = sm.sampling(data=dat_list, iter=2000, chains=4)
+fit = sm.sampling(data=dat_list, iter=2000, chains=4, seed=12345)
 print(fit)
 
 # save it to the file 'model.pkl' for later use

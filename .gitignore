@@ -1,5 +1,8 @@
 Procfile
 
+# Pickle files
+stan_scripts/*.pkl
+
 # R and Rstudio
 *.R
 *.Rproj

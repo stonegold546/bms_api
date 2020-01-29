@@ -1,4 +1,5 @@
 from scipy.stats import norm
+import numpy as np
 import pickle
 from pystan import StanModel
 
@@ -6,7 +7,7 @@ from pystan import StanModel
 dat_list = {
     'pass': [1459, 1513], 'total': [2013, 2025],
     'sd_m': 4 / norm.ppf(.975),
-    'sd_m_diff': 2 / norm.ppf(.975)
+    'sd_m_diff': np.log(2) / norm.ppf(.975)
 }
 
 sm = StanModel(file='two_group_logistic.stan')

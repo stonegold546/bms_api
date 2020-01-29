@@ -193,7 +193,7 @@ class TwoGroupBin:
         dat_list = {
             'pass': success, 'total': total,
             'sd_m': raw_data['sd_m'] / norm.ppf(.975),
-            'sd_m_diff': raw_data['sd_m_diff'] / norm.ppf(.975)
+            'sd_m_diff': np.log(raw_data['sd_m_diff']) / norm.ppf(.975)
         }
         params = {new_list: {}
                   for new_list in ['m0', 'm_diff', 'means_logit[1]', 'means_logit[2]',

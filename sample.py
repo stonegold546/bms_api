@@ -31,9 +31,9 @@ def create_qty_plt(samples, name, percent=False):
         map(lambda x: x / 1000, range(1, 1000)))
     x = np.quantile(samples, y)
     y = y[::-1]
-    ytks = [.001, .5, .8, .95, .999]
-    xtks = np.quantile(samples, [.001, .05, .2, .5, .999])
-    left, width = 0.15, .8
+    # ytks = [.001, .5, .8, .95, .999]
+    # xtks = np.quantile(samples, [.001, .05, .2, .5, .999])
+    left, width = 0.18, .77
     bottom, height = 0.13, 0.65
     spacing = 0.05
     rect_scatter = [left, bottom, width, height]
@@ -44,18 +44,22 @@ def create_qty_plt(samples, name, percent=False):
     ax_scatter.spines['top'].set_visible(False)
     ax_scatter.tick_params(axis='x', labelrotation=30)
     ax_scatter.plot(x, y, color='black')
+    ax_scatter.set_xlabel('threshold')
+    ax_scatter.set_ylabel('P(' + name + ' > threshold)')
+    # ax_scatter.set_xticks(xtks)
+    xtks = list(filter(lambda tk: tk > np.min(x) and tk <
+                       np.max(x), ax_scatter.get_xticks()))
+    ytks = list(map(lambda tk: (samples > tk).mean(), xtks))
+    ytks = list(filter(lambda tk: tk >= .05, ytks))
     ax_scatter.set_yticks(ytks)
     ax_scatter.set_yticklabels(['{:,.1%}'.format(x)
                                 for x in ax_scatter.get_yticks()])
-    ax_scatter.set_xticks(xtks)
-    ax_scatter.set_xlabel('threshold')
-    ax_scatter.set_ylabel('P(' + name + ' > threshold)')
-    for ytk in ytks:
-        ax_scatter.axhline(ytk, color="#5d5d5d", linestyle=':')
     for xtk in xtks:
-        ax_scatter.axvline(xtk, color="#5d5d5d", linestyle=':')
+        ax_scatter.axvline(xtk, color="#5d5d5d", linestyle='-', linewidth=.05)
+    for ytk in ytks:
+        ax_scatter.axhline(ytk, color="#5d5d5d", linestyle='-', linewidth=.05)
     # if not ((ref is None) or (ref > np.max(samples)) or (ref < np.min(samples))):
-    #     ax_scatter.axvline(ref, color="#5d5d5d", linestyle='--')
+    #     ax_scatter.axvline(ref, color="#5d5d5d", linestyle='--', linewidth=.05)
     ax_histx = plt.axes(rect_histx)
     ax_histx.get_yaxis().set_visible(False)
     ax_histx.spines['right'].set_visible(False)

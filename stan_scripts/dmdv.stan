@@ -28,7 +28,7 @@ model {
   m_diff ~ normal(0, sd_m_diff);
   ln_st0 ~ student_t(3, 0, sd_st);
   ln_st_ratio ~ normal(0, sd_st_r);
-  if (nu_choice == 0) nu ~ gamma(2, 0.1);
+  if (nu_choice == 0) nu ~ gamma(1, 0.1);
   else if (nu_choice == 1) nu ~ exponential(1.0 / 29);
 
   y ~ student_t(nu + nu_choice, mu, sigma);

@@ -13,13 +13,17 @@ dat_list = {
         101, 100, 99, 101, 100, 102, 99, 100, 99],
     'x': np.concatenate(([1] * 47, [0] * 42)),
     'N': 89, 'sd_m': 5, 'sd_m_diff': 15 / norm.ppf(.975),
-    'sd_st': 1, 'sd_st_r': 3 / norm.ppf(.975), 'nu_choice': 0
+    'sd_st': 1, 'sd_st_r': 3 / norm.ppf(.975), 'nu_choice': 0, 'prob': 0.25
 }
 
 sm = StanModel(file='dmdv.stan')
-fit = sm.sampling(data=dat_list, iter=2000, chains=4, seed=12345)
-print(fit)
+sm_qt = StanModel(file='dmdv_quantile.stan')
+# fit = sm.sampling(data=dat_list, iter=2000, chains=4, seed=12345)
+# print(fit)
 
 # save it to the file 'model.pkl' for later use
 with open('dmdv.pkl', 'wb') as f:
     pickle.dump(sm, f)
+
+with open('dmdv_quantile.pkl', 'wb') as f:
+    pickle.dump(sm_qt, f)

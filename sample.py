@@ -91,11 +91,18 @@ class TTest:
             'sd_m_diff': raw_data['max_diff'] / norm.ppf(.975),
             'sd_st': raw_data['sd_st'],
             'sd_st_r': np.log(raw_data['max_st_r']) / norm.ppf(.975),
-            'nu_choice': raw_data['nu_choice']
+            'nu_choice': raw_data['nu_choice'], 'prob': raw_data['prob'] / 100
         }
+
         params = {new_list: {} for new_list in [
             'm0', 'm1', 'm_diff', 'st0', 'st1', 'st_ratio', 'nu']}
-        dmdv = pickle.load(open('stan_scripts/dmdv.pkl', 'rb'))
+
+        pkl_file = 'stan_scripts/dmdv.pkl'
+        if raw_data['prob'] > 0:
+            del params['nu']
+            pkl_file = 'stan_scripts/dmdv_quantile.pkl'
+
+        dmdv = pickle.load(open(pkl_file, 'rb'))
         fit = dmdv.sampling(data=dat_list, chains=4,
                             iter=raw_data['n_iter'], seed=12345)
 
@@ -120,8 +127,12 @@ class TTest:
         plt.close()
         params['rk_hash'] = img_b64(rk_IOBytes)
 
-        params['mean_hash'] = create_qty_plt(
-            posteriors['m_diff'], 'mean difference')
+        if raw_data['prob'] > 0:
+            params['mean_hash'] = create_qty_plt(
+                posteriors['m_diff'], 'percentile-' + str(raw_data['prob']) + ' difference')
+        else:
+            params['mean_hash'] = create_qty_plt(
+                posteriors['m_diff'], 'mean difference')
         params['sc_hash'] = create_qty_plt(
             posteriors['st_ratio'], 'SD ratio')
 

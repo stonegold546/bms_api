@@ -2,6 +2,7 @@ Procfile
 
 # Pickle files
 stan_scripts/*.pkl
+stan_scripts/*.rds
 
 # R and Rstudio
 *.R

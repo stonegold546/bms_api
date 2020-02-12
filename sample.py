@@ -42,7 +42,7 @@ def create_qty_plt(samples, name, percent=False):
     ax_scatter = plt.axes(rect_scatter)
     ax_scatter.spines['right'].set_visible(False)
     ax_scatter.spines['top'].set_visible(False)
-    ax_scatter.tick_params(axis='x', labelrotation=30)
+    # ax_scatter.tick_params(axis='x', labelrotation=30)
     ax_scatter.plot(x, y, color='black')
     ax_scatter.set_xlabel('threshold')
     ax_scatter.set_ylabel('P(' + name + ' > threshold)')

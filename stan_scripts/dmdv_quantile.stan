@@ -1,18 +1,15 @@
 functions {
   real ald_lpdf(vector y, vector mu, vector scale, real prob) {
-    real out = 0;
+    real out = sum(log(prob * (1 - prob) ./ scale));
     {
       int len = rows(y);
       vector[len] z = (y - mu) ./ scale;
-      vector[len] tmp = prob * (1 - prob) ./ scale;
       for (i in 1:len) {
-        real pdf;
         if (y[i] < mu[i]) {
-          pdf = tmp[i] * exp((1 - prob) * z[i]);
+          out += (1 - prob) * z[i];
         } else {
-          pdf = tmp[i] * exp(-prob * z[i]);
+          out -= prob * z[i];
         }
-        out += log(pdf);
       }
     }
     return(out);

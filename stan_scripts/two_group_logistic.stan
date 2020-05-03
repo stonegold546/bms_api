@@ -20,15 +20,15 @@ model {
   pass ~ binomial_logit(total, means_logit);
 }
 generated quantities {
-  vector[2] log_lik;
-  vector[2] yhat;
+  // vector[2] log_lik;
+  // vector[2] yhat;
   real odds_ratio = exp(m_diff);
   vector[2] means_prob = inv_logit(means_logit);
   real prob_ratio = means_prob[2] / means_prob[1];
   real prob_diff = means_prob[2] - means_prob[1];
 
-  for (i in 1:2) {
-    log_lik[i] = binomial_logit_lpmf(pass[i] | total[i], means_logit[i]);
-    yhat[i] = binomial_rng(total[i], means_prob[i]);
-  }
+  // for (i in 1:2) {
+  //   log_lik[i] = binomial_logit_lpmf(pass[i] | total[i], means_logit[i]);
+  //   yhat[i] = binomial_rng(total[i], means_prob[i]);
+  // }
 }

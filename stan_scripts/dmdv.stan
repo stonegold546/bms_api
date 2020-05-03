@@ -34,15 +34,15 @@ model {
   y ~ student_t(nu + nu_choice, mu, sigma);
 }
 generated quantities {
-  vector[N] log_lik;
-  vector[N] yhat;
+  // vector[N] log_lik;
+  // vector[N] yhat;
   real m1 = m0 + m_diff;
   real <lower = 0> st0 = exp(ln_st0);
   real <lower = 0> st1 = exp(ln_st0 + ln_st_ratio);
   real<lower = 0> st_ratio = exp(ln_st_ratio);
 
-  for (i in 1:N) {
-    yhat[i] = student_t_rng(nu + nu_choice, mu[i], sigma[i]);
-    log_lik[i] = student_t_lpdf(y[i] | nu + nu_choice, mu[i], sigma[i]);
-  }
+  // for (i in 1:N) {
+  //   yhat[i] = student_t_rng(nu + nu_choice, mu[i], sigma[i]);
+  //   log_lik[i] = student_t_lpdf(y[i] | nu + nu_choice, mu[i], sigma[i]);
+  // }
 }

@@ -31,17 +31,17 @@ parameters {
   real ln_st0;
   real ln_st_ratio;
 }
-transformed parameters {
-  vector[N] mu = m0 + x * m_diff;
-  vector[N] sigma = exp(ln_st0 + x * ln_st_ratio);
-}
 model {
   m0 ~ cauchy(0, sd_m);
   m_diff ~ normal(0, sd_m_diff);
   ln_st0 ~ student_t(3, 0, sd_st);
   ln_st_ratio ~ normal(0, sd_st_r);
 
-  y ~ ald_lpdf(mu, sigma, prob);
+  {
+    vector[N] mu = m0 + x * m_diff;
+    vector[N] sigma = exp(ln_st0 + x * ln_st_ratio);
+    y ~ ald_lpdf(mu, sigma, prob);
+  }
 }
 generated quantities {
   real m1 = m0 + m_diff;

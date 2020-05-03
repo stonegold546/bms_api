@@ -257,10 +257,68 @@ class TwoGroupBin:
         resp.media = params
 
 
+class TTestBeta:
+    def on_post(self, req, resp, **kwargs):
+        raw_data = load(req.bounded_stream)['params']
+        # print(raw_data)
+        y1 = pd.Series(raw_data['y1'])
+        y0 = pd.Series(raw_data['y0'])
+        y_comb = pd.concat([y1, y0])
+        x_comb = pd.concat(
+            [pd.Series([1] * y1.size), pd.Series([0] * y0.size)])
+        dat_list = {
+            'y': y_comb, 'x': x_comb, 'N': y1.size + y0.size,
+            'min_val': raw_data['min_val'], 'max_val': raw_data['max_val'],
+            'sd_m': raw_data['sd_m'],
+            'sd_m_diff': raw_data['max_diff'] / norm.ppf(.975)
+        }
+
+        params = {new_list: {} for new_list in [
+            'm0', 'm1', 'm_diff', 'st0', 'st1', 'st_ratio', 'shape1_alpha',
+            'shape1_beta', 'shape2_alpha', 'shape2_beta']}
+
+        pkl_file = 'stan_scripts/dmdv_beta.pkl'
+
+        dmdv_beta = pickle.load(open(pkl_file, 'rb'))
+        fit = dmdv_beta.sampling(data=dat_list, chains=4,
+                                 iter=raw_data['n_iter'], seed=12345)
+
+        # ('mean', 'se_mean', 'sd', 'n_eff', 'Rhat')
+
+        summary = fit.summary(pars=params.keys(), probs=[])['summary']
+
+        posteriors = fit.extract()
+        for i in range(len(params)):
+            param = list(params.keys())[i]
+            params[param] = {
+                'mean': summary[i][0], 'median': np.median(posteriors[param]),
+                'mcse': summary[i][1], 'sd': summary[i][2],
+                'post': posteriors[param].tolist(),
+                'ess': summary[i][3], 'rhat': summary[i][4],
+                # todo: 'warnings':
+            }
+
+        rk_IOBytes = io.BytesIO()
+        az.plot_rank(fit, var_names=('m_diff', 'st_ratio'))
+        plt.savefig(rk_IOBytes, format='png')
+        plt.close()
+        params['rk_hash'] = img_b64(rk_IOBytes)
+
+        params['mean_hash'] = create_qty_plt(
+            posteriors['m_diff'], 'mean difference')
+        params['sc_hash'] = create_qty_plt(
+            posteriors['st_ratio'], 'SD ratio')
+
+        params['raw_data'] = raw_data
+
+        resp.media = params
+
+
 cors = CORS(allow_all_origins=True,
             allow_all_methods=True, allow_all_headers=True)
 api = application = falcon.API(middleware=[cors.middleware])
 
 api.add_route('/two_sample_test', TTest())
+api.add_route('/two_sample_test_beta', TTestBeta())
 api.add_route('/meta_re', MetaRE())
 api.add_route('/two_sample_binary', TwoGroupBin())

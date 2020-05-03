@@ -283,8 +283,8 @@ class TTestBeta:
         }
 
         params = {new_list: {} for new_list in [
-            'm0', 'm1', 'm_diff', 'st0', 'st1', 'st_ratio', 'shape1_alpha',
-            'shape1_beta', 'shape2_alpha', 'shape2_beta']}
+            'm0', 'm1', 'm_diff', 'st0', 'st1', 'st_ratio', 'shape0_alpha',
+            'shape0_beta', 'shape1_alpha', 'shape1_beta']}
 
         pkl_file = 'stan_scripts/dmdv_beta.pkl'
 

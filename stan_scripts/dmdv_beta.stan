@@ -24,10 +24,10 @@ parameters {
 transformed parameters {
   real<lower = 0, upper = 1> p0 = inv_logit(m0_lgt);
   real<lower = 0, upper = 1> p1 = inv_logit(m0_lgt + m_diff_lgt);
-  real<lower = 0> shape1_alpha = p0 * n0;
-  real<lower = 0> shape1_beta = (1 - p0) * n0;
-  real<lower = 0> shape2_alpha = p1 * n1;
-  real<lower = 0> shape2_beta = (1 - p1) * n1;
+  real<lower = 0> shape0_alpha = p0 * n0;
+  real<lower = 0> shape0_beta = (1 - p0) * n0;
+  real<lower = 0> shape1_alpha = p1 * n1;
+  real<lower = 0> shape1_beta = (1 - p1) * n1;
 }
 model {
   m0_lgt ~ normal(0, sd_m);

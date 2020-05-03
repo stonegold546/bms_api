@@ -293,17 +293,21 @@ class TTestBeta:
                                  iter=raw_data['n_iter'], seed=12345)
 
         # ('mean', 'se_mean', 'sd', 'n_eff', 'Rhat')
+        lo_prob = (1 - raw_data['interval'] / 100) / 2
+        hi_prob = 1 - lo_prob
 
-        summary = fit.summary(pars=params.keys(), probs=[])['summary']
+        summary = fit.summary(pars=params.keys(), probs=(
+            lo_prob, .5, hi_prob))['summary']
 
         posteriors = fit.extract()
         for i in range(len(params)):
             param = list(params.keys())[i]
             params[param] = {
-                'mean': summary[i][0], 'median': np.median(posteriors[param]),
+                'mean': summary[i][0], 'median': summary[i][4],
                 'mcse': summary[i][1], 'sd': summary[i][2],
+                'int.lo': summary[i][3], 'int.hi': summary[i][5],
                 'post': posteriors[param].tolist(),
-                'ess': summary[i][3], 'rhat': summary[i][4],
+                'ess': summary[i][6], 'rhat': summary[i][7],
                 # todo: 'warnings':
             }
 

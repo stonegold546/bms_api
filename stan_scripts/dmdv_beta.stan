@@ -1,5 +1,5 @@
 data {
-  real<lower = 0> sd_m;
+  real<lower = 0> a0;
   real<lower = 0> sd_m_diff;
   int<lower = 0> N;
   vector<lower = 0, upper = 1>[N] x;
@@ -16,30 +16,28 @@ transformed data {
   }
 }
 parameters {
-  real m0_lgt;
-  real m_diff_lgt;
+  real<lower = 0, upper = 1> p0;
+  real<lower = -1, upper = 1> pd;
   real<lower = 0> n0;
   real<lower = 0> n1;
 }
 transformed parameters {
-  real<lower = 0, upper = 1> p0 = inv_logit(m0_lgt);
-  real<lower = 0, upper = 1> p1 = inv_logit(m0_lgt + m_diff_lgt);
+  real<lower = 0, upper = 1> p1 = p0 + pd;
   real<lower = 0> shape0_alpha = p0 * n0;
   real<lower = 0> shape0_beta = (1 - p0) * n0;
   real<lower = 0> shape1_alpha = p1 * n1;
   real<lower = 0> shape1_beta = (1 - p1) * n1;
 }
 model {
-  m0_lgt ~ normal(0, sd_m);
-  m_diff_lgt ~ normal(0, sd_m_diff);
+  p0 ~ beta(a0, a0);
+  pd ~ normal(0, sd_m_diff / (max_val - min_val));
   n0 ~ gamma(2, .1);
   n1 ~ gamma(2, .1);
 
   {
     vector[N] kappa = rep_vector(n0, N);
     for (i in 1:N) if (x[i] == 1) kappa[i] = n1;
-    y_prop ~ beta_proportion(
-      inv_logit(m0_lgt + x * m_diff_lgt), kappa);
+    y_prop ~ beta_proportion(p0 + pd * x, kappa);
   }
 }
 generated quantities {

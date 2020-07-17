@@ -267,19 +267,19 @@ class TTestBeta:
         x_comb = pd.concat(
             [pd.Series([1] * y1.size), pd.Series([0] * y0.size)])
         # Get maximum risk difference
-        max_prop_diff = raw_data['max_diff'] / (raw_data['max_val'] - raw_data['min_val'])
+        # max_prop_diff = raw_data['max_diff'] / (raw_data['max_val'] - raw_data['min_val'])
         # Set max logit difference to qlogis(.7 + max_RD) - qlogis(.7); censor .7 + max_RD at .99
-        sd_m_diff = logistic.ppf(
-            min([.99, .7 + max_prop_diff])) - logistic.ppf(.7)
+        # sd_m_diff = logistic.ppf(
+        #     min([.99, .7 + max_prop_diff])) - logistic.ppf(.7)
         # Change max difference to qlogis(.9 + max_RD) - qlogis(.9) if variable is extreme
-        if (raw_data['sd_m'] > 3):
-            sd_m_diff = logistic.ppf(
-                min([.99, .9 + max_prop_diff])) - logistic.ppf(.9)
+        # if (raw_data['sd_m'] > 3):
+        #     sd_m_diff = logistic.ppf(
+        #         min([.99, .9 + max_prop_diff])) - logistic.ppf(.9)
         dat_list = {
             'y': y_comb, 'x': x_comb, 'N': y1.size + y0.size,
             'min_val': raw_data['min_val'], 'max_val': raw_data['max_val'],
-            'sd_m': raw_data['sd_m'],
-            'sd_m_diff': sd_m_diff / norm.ppf(.975)
+            'a0': raw_data['sd_m'],
+            'sd_m_diff': raw_data['max_diff'] / norm.ppf(.975)
         }
 
         params = {new_list: {} for new_list in [

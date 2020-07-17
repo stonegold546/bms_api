@@ -40,7 +40,7 @@ model {
   {
     vector[N] mu = m0 + x * m_diff;
     vector[N] sigma = exp(ln_st0 + x * ln_st_ratio);
-    y ~ ald_lpdf(mu, sigma, prob);
+    y ~ ald(mu, sigma, prob);
   }
 }
 generated quantities {
